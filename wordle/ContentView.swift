@@ -21,14 +21,14 @@ struct Data: Identifiable{
 
 struct ContentView: View {
     @State private var array = [Substring]()
-    @State var keyboards = [
-        Keyboard(name: "A"),Keyboard(name: "B"),Keyboard(name: "C"),Keyboard(name: "D"),Keyboard(name: "E"),
-        Keyboard(name: "F"),Keyboard(name: "G"),Keyboard(name: "H"),Keyboard(name: "I"),Keyboard(name: "J"),
-        Keyboard(name: "K"),Keyboard(name: "L"),Keyboard(name: "M"),Keyboard(name: "N"),Keyboard(name: "O"),
-        Keyboard(name: "P"),Keyboard(name: "Q"),Keyboard(name: "R"),Keyboard(name: "S"),Keyboard(name: "T"),
-        Keyboard(name: "U"),Keyboard(name: "V"),Keyboard(name: "W"),Keyboard(name: "X"),Keyboard(name: "Y"),
-        Keyboard(name: "Z"),Keyboard(name: "↵"),Keyboard(name: "<-")
-    ]
+    @State var keyboards = [Keyboard]()
+//        Keyboard(name: "A"),Keyboard(name: "B"),Keyboard(name: "C"),Keyboard(name: "D"),Keyboard(name: "E"),
+//        Keyboard(name: "F"),Keyboard(name: "G"),Keyboard(name: "H"),Keyboard(name: "I"),Keyboard(name: "J"),
+//        Keyboard(name: "K"),Keyboard(name: "L"),Keyboard(name: "M"),Keyboard(name: "N"),Keyboard(name: "O"),
+//        Keyboard(name: "P"),Keyboard(name: "Q"),Keyboard(name: "R"),Keyboard(name: "S"),Keyboard(name: "T"),
+//        Keyboard(name: "U"),Keyboard(name: "V"),Keyboard(name: "W"),Keyboard(name: "X"),Keyboard(name: "Y"),
+//        Keyboard(name: "Z"),Keyboard(name: "↵"),Keyboard(name: "<-")
+//    ]
     
     @State var datas = [Data]()
     @State var letter:Double = 4
@@ -36,9 +36,31 @@ struct ContentView: View {
     @State var alphatIndex = 0
     @State var Answer:String = "null"
     @State var num = [Substring]()
-    @State private var showBingoAlert = false
-    @State private var showFailAlert = false
+    @State private var showBingoView = false
+    @State private var showFailView = false
+    @State private var showSecondView = false
+    @State private var showEnoughAlert = false
+    @State private var showWordListAlert = false
+    @State var click = 0
     
+    func initialCircle(){
+        keyboards = [
+            Keyboard(name: "A",color: .white),Keyboard(name: "B",color: .white),
+            Keyboard(name: "C",color: .white),Keyboard(name: "D",color: .white),
+            Keyboard(name: "E",color: .white),Keyboard(name: "F",color: .white),
+            Keyboard(name: "G",color: .white),Keyboard(name: "H",color: .white),
+            Keyboard(name: "I",color: .white),Keyboard(name: "J",color: .white),
+            Keyboard(name: "K",color: .white),Keyboard(name: "L",color: .white),
+            Keyboard(name: "M",color: .white),Keyboard(name: "N",color: .white),
+            Keyboard(name: "O",color: .white),Keyboard(name: "P",color: .white),
+            Keyboard(name: "Q",color: .white),Keyboard(name: "R",color: .white),
+            Keyboard(name: "S",color: .white),Keyboard(name: "T",color: .white),
+            Keyboard(name: "U",color: .white),Keyboard(name: "V",color: .white),
+            Keyboard(name: "W",color: .white),Keyboard(name: "X",color: .white),
+            Keyboard(name: "Y",color: .white),Keyboard(name: "Z",color: .white),
+            Keyboard(name: "↵",color: .white),Keyboard(name: "<-",color: .white)
+        ]
+    }
     func initialRec (grid: Int){
         datas.removeAll()
         for _ in 1...grid{
@@ -46,9 +68,10 @@ struct ContentView: View {
         }
     }
     
-    func initialCir(){
-        for i in 0...26{
-            keyboards[i].color = .white
+    func clean(){
+        for _ in 0..<Int(letter){
+            datas[alphatIndex-1].name = ""
+            alphatIndex -= 1
         }
     }
     func inputAlphat(index: Int){
@@ -63,7 +86,7 @@ struct ContentView: View {
         datas[alphatIndex].name = ""
     }
     func answer(){
-       
+        num.removeAll()
         if let asset = NSDataAsset(name: "fruit"),
         let content = String(data: asset.data, encoding: .utf8) {
             array = content.split(separator: "\n")
@@ -76,12 +99,29 @@ struct ContentView: View {
         }
         Answer = String(num.randomElement()!)
     }
+    func judgeWordList()->Bool{
+        var enterIndex = alphatIndex
+        var temp = [String]()
+        var tempString: String
+        var isHave = false
+        for i in stride(from: enterIndex-Int(letter), to: enterIndex, by: 1){
+            temp.append(datas[i].name.lowercased())
+        }
+        tempString = temp.joined()
+        for (index,value) in num.enumerated(){
+            if(String(num[index]) == tempString){
+                isHave = true
+            }
+        }
+        return isHave
+        
+    }
     func enter(){
         var enterIndex = alphatIndex - 1
         var correct = Array(Answer)
         var black = true
         var bingo = 0
-
+        
         for i in stride(from: enterIndex, to: enterIndex-Int(letter), by: -1){
             if(datas[i].name.lowercased() == String(correct[i%Int(letter)])){
                 datas[i].color = .green
@@ -117,11 +157,11 @@ struct ContentView: View {
         }
        
         if(bingo == Int(letter)){
-            showBingoAlert = true
+            showBingoView = true
         }
         
         if(bingo != Int(letter) && alphatIndex == Int(letter*6)){
-            showFailAlert = true
+            showFailView = true
         }
     }
     
@@ -129,11 +169,12 @@ struct ContentView: View {
         Text("answer : \(Answer)")
         Button("start"){
             initialRec(grid: grid)
-            initialCir()
+            initialCircle()
             answer()
-            showBingoAlert = false
-            showFailAlert = false
+            showBingoView = false
+            showFailView = false
             alphatIndex = 0
+            click = 0
         }
         VStack{ //slider
             Slider(value: $letter, in: 4...6, step:1)
@@ -155,10 +196,20 @@ struct ContentView: View {
                 .onChange(of: letter, perform: {value in
                     grid = Int(value)*6
                     initialRec(grid: grid)
+                    initialCircle()
+                    alphatIndex = 0
+                    answer()
+                    click = 0
                 })
             }
-            .alert("You Win!!",isPresented: $showBingoAlert,actions: { Button("OK"){}})
-            .alert("Answer : \(Answer)", isPresented: $showFailAlert, actions: { Button("OK"){}})
+//            .alert("You Win!!",isPresented: $showBingoAlert,actions: { Button("OK"){}})
+//            .alert("Answer : \(Answer)", isPresented: $showFailAlert, actions: { Button("OK"){}})
+            .fullScreenCover(isPresented: $showBingoView){
+                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer)
+            }
+            .fullScreenCover(isPresented: $showFailView){
+                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer)
+            }
         }
         
         VStack{//keyboard
@@ -173,16 +224,34 @@ struct ContentView: View {
                             Text("\(keyboard.name)")
                         )
                         .onTapGesture {
+                            
                             if(index == 27){
                                 deleteAlphat()
+                                if(click > 0){
+                                    click -= 1
+                                }
                             }
-                            else if(index == 26){
-                                enter()
+                            else if(index == 26 && click == Int(letter)){
+                                if(judgeWordList()){
+                                    enter()
+                                }
+                                else{
+                                    showWordListAlert = true
+                                    clean()
+                                }
+                                click = 0
                             }
-                            else{
+                            else if(index == 26 && click<Int(letter)){
+                                showEnoughAlert = true
+                            }
+                            else if(click < Int(letter) && index != 27 && index != 26){
                                 inputAlphat(index: index)
+                                click += 1
                             }
+                           
                         }
+                        .alert("not enough letters", isPresented: $showEnoughAlert, actions: {Button("OK"){}})
+                        .alert("not in word list", isPresented: $showWordListAlert, actions: {Button("OK"){}})
                     
                 }
             }
