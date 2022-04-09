@@ -41,6 +41,8 @@ struct ContentView: View {
     @State private var showSecondView = false
     @State private var showEnoughAlert = false
     @State private var showWordListAlert = false
+    @State private var showShare = false
+    @State var share = false
     @State var click = 0
     
     func initialCircle(){
@@ -158,6 +160,8 @@ struct ContentView: View {
        
         if(bingo == Int(letter)){
             showBingoView = true
+            showShare = true
+            share = true
         }
         
         if(bingo != Int(letter) && alphatIndex == Int(letter*6)){
@@ -167,6 +171,12 @@ struct ContentView: View {
     
     var body: some View {
         Text("answer : \(Answer)")
+        if(share){
+            Button("share"){showShare = true}
+            .fullScreenCover(isPresented: $showShare){
+                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer,datas: $datas,letter:$letter,showShare:$showShare)
+            }
+        }
         Button("start"){
             initialRec(grid: grid)
             initialCircle()
@@ -175,12 +185,14 @@ struct ContentView: View {
             showFailView = false
             alphatIndex = 0
             click = 0
+            share = false
         }
         VStack{ //slider
             Slider(value: $letter, in: 4...6, step:1)
             Text("Letter : \(Int(letter))")
         }
         VStack{ //Recatangle
+            
             let columns = Array(repeating: GridItem(), count: Int(letter))
             LazyVGrid(columns: columns) {
                 ForEach(Array(datas.enumerated()), id: \.element.id) { index, data in
@@ -200,15 +212,16 @@ struct ContentView: View {
                     alphatIndex = 0
                     answer()
                     click = 0
+                    share = false
                 })
             }
 //            .alert("You Win!!",isPresented: $showBingoAlert,actions: { Button("OK"){}})
 //            .alert("Answer : \(Answer)", isPresented: $showFailAlert, actions: { Button("OK"){}})
             .fullScreenCover(isPresented: $showBingoView){
-                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer)
+                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer,datas: $datas,letter:$letter, showShare: $showShare)
             }
             .fullScreenCover(isPresented: $showFailView){
-                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer)
+                SecondView(showBingoView: $showBingoView, showFailView: $showFailView, Answer: $Answer,datas: $datas,letter:$letter,showShare: $showShare)
             }
         }
         
@@ -262,6 +275,5 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-        
     }
 }

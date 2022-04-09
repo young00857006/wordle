@@ -12,44 +12,59 @@ struct SecondView: View{
     @Binding var showBingoView: Bool
     @Binding var showFailView: Bool
     @Binding var Answer: String
+    @Binding var datas: Array<Data>
+    @Binding var letter: Double
+    @Binding var showShare:Bool
+    
+   
     
     var body: some View{
-        if(showBingoView){
-            ZStack{
-                Color.white
+        
+        ZStack{
+            Color.white
                 .ignoresSafeArea()
-                Text("You Win!!")
+            if(showBingoView){
+                Text("You Win!!\n\n\n")
             }
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    showBingoView = false
-                } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .padding(20)
-                }
-            }
-        }
-        if(showFailView){
-            ZStack{
-                Color.white
-                .ignoresSafeArea()
-                Text("You Lose!!\n\n")
+            else  if(showFailView){
+                Text("You Lose!!\n\n\n")
                 Text("Answer : \(Answer)")
             }
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    showFailView = false
-                } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .padding(20)
+            VStack{
+                let columns = Array(repeating: GridItem(spacing:0), count: Int(letter))
+                LazyVGrid(columns: columns, spacing: 0) {
+                    ForEach(Array(datas.enumerated()), id: \.element.id) { index, data in
+                        if(data.color == .green){
+                            Text("🟩")
+                        }
+                        else if(data.color == .yellow){
+                            Text("🟨")
+                        }
+                        else if(data.color == .gray){
+                            Text("⬛️")
+                        }
+                      
+                    }
                 }
             }
+            
+            
+            
         }
-        
-        
+        .overlay(alignment: .topTrailing) {
+            Button {
+                showBingoView = false
+                showFailView = false
+                showShare = false
+            } label: {
+            Image(systemName: "xmark.circle.fill")
+                .resizable()
+                .frame(width: 50, height: 50)
+                .padding(20)
+            }
+        }
+        VStack{
+            
+        }
     }
 }
