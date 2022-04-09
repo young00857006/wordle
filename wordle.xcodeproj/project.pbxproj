@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D3169B2728019B7A009F5891 /* SecondView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3169B2628019B7A009F5891 /* SecondView.swift */; };
 		D34EB73E27EB084C00AAEF8B /* wordleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34EB73D27EB084C00AAEF8B /* wordleApp.swift */; };
 		D34EB74027EB084C00AAEF8B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34EB73F27EB084C00AAEF8B /* ContentView.swift */; };
 		D34EB74227EB084E00AAEF8B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D34EB74127EB084E00AAEF8B /* Assets.xcassets */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D3169B2628019B7A009F5891 /* SecondView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondView.swift; sourceTree = "<group>"; };
 		D34EB73A27EB084C00AAEF8B /* wordle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wordle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D34EB73D27EB084C00AAEF8B /* wordleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wordleApp.swift; sourceTree = "<group>"; };
 		D34EB73F27EB084C00AAEF8B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -51,6 +53,7 @@
 		D34EB73C27EB084C00AAEF8B /* wordle */ = {
 			isa = PBXGroup;
 			children = (
+				D3169B2628019B7A009F5891 /* SecondView.swift */,
 				D34EB73D27EB084C00AAEF8B /* wordleApp.swift */,
 				D34EB73F27EB084C00AAEF8B /* ContentView.swift */,
 				D34EB74127EB084E00AAEF8B /* Assets.xcassets */,
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3169B2728019B7A009F5891 /* SecondView.swift in Sources */,
 				D34EB74027EB084C00AAEF8B /* ContentView.swift in Sources */,
 				D34EB73E27EB084C00AAEF8B /* wordleApp.swift in Sources */,
 			);

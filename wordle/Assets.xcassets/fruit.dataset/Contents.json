@@ -1,0 +1,12 @@
+{
+  "data" : [
+    {
+      "filename" : "fruit.txt",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
