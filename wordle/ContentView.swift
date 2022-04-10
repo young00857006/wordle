@@ -170,7 +170,8 @@ struct ContentView: View {
     }
     
     var body: some View {
-        Text("answer : \(Answer)")
+//        Text("answer : \(Answer)")
+        Text("WORDLE - FRUIT")
         if(share){
             Button("share"){showShare = true}
             .fullScreenCover(isPresented: $showShare){
